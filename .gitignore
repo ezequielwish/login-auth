@@ -1,6 +1,0 @@
-.git/
-.idea/
-venv/
-colors/__pycache__/
-database/__pycache__/
-test.py
