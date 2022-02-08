@@ -9,7 +9,7 @@ class SqlEmu:
             colors.color_print('[*] Checking database...', 'grey')
             self.check_file()
         except FileNotFoundError:
-            colors.color_print('[*] Database not found! Lets create!', 'red')
+            colors.color_print('[X] Database not found', 'red')
             colors.color_print('[*] Creating a new database...', 'grey')
             self.create_file()
 
@@ -33,13 +33,14 @@ class SqlEmu:
             data_as_dict[key] = value
         return data_as_dict
 
-    def check_data(self, id_key, data, sep=None):
+    def check_data(self, id_key, data='', sep=None):
         """
         Checks if a data is in the database
         :param id_key: ID of the data (first param before the separator)
         :param data: Rest of the content
         :param sep: Data separator
-        :return: True: if the ID was founded,
+        :return: True
+         : if the ID was founded,
                  False: if the ID was founded but the data does not correspond
                  None: if the ID was not founded
         """
@@ -58,7 +59,7 @@ class SqlEmu:
     def database_update(self, data_as_list):
         with open(self._file, 'w') as file:
             file.writelines(data_as_list)
-        colors.color_print('[*] Database updated.', 'grey')
+        colors.color_print('[*] Success', 'grey')
 
     # Add anything to the database
     def add_data(self, data):
