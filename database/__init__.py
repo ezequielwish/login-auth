@@ -15,18 +15,18 @@ class SqlEmu:
 
     # Check file integrity.
     def check_file(self):
-        with open('users.txt', 'r') as file:
+        with open('.db.txt', 'r') as file:
             file.close()
 
     # Create the file.
     def create_file(self):
-        with open('users.txt', 'w') as file:
+        with open('.db.txt', 'w') as file:
             file.close()
 
     def database_handler(self):
         db = []
         persons = []
-        with open('users.txt', 'r') as database:
+        with open('.db.txt', 'r') as database:
             db = database.readlines()
         for data in db:
             temp = {}
@@ -39,7 +39,7 @@ class SqlEmu:
 
     def database_update(self):
         temp = self.handler.copy()
-        with open('users.txt', 'w') as file:
+        with open('.db.txt', 'w') as file:
             for person in temp:
                 file.write(f'{person["-usr-"]};{person["-psw-"]}\n')
 
