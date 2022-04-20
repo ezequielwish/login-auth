@@ -10,17 +10,23 @@ class Login:
             [Gui.Button('Fazer Login', key='login'), Gui.Button('Cadastrar-se', key='join')]
         ]
         self.window = Gui.Window('Login', layout=self.layout)
+        self.sql = SqlEmu()
 
     def init(self):
-        while True:
-            button, values = self.window.Read()
-            user = values['user']
-            password = values['password']
-            if button == 'login':
-                print(f'({user}|{password}) logado.')
-            elif button == 'join':
-                print(f'({user}|{password}) cadastrado.')
+            try:
+                while True:
+                    button, values = self.window.Read()
+                    if button == Gui.WIN_CLOSED:
+                        break
+                    user = values['user']
+                    password = values['password']
+                    if button == 'login':
+                        pass
+                    elif button == 'join':
+                        self.sql.add_data(user=user, password=password)
+            finally:
+                self.sql.database_update()
 
 
-screen = Login()
-screen.init()
+window = Login()
+window.init()
