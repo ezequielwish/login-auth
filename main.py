@@ -1,32 +1,62 @@
-from database import SqlEmu
-import PySimpleGUI as Gui
+from database import SqlSim
+import PySimpleGUI as sg
 
 
-class Login:
+class Auth:
     def __init__(self):
+        # Window Layout
         self.layout = [
-            [Gui.Text('Usuário:', size=(7, 0)), Gui.Input(size=(15, 0), key='user')],
-            [Gui.Text('Senha:', size=(7, 0)), Gui.Input(size=(15, 0), key='password')],
-            [Gui.Button('Fazer Login', key='login'), Gui.Button('Cadastrar-se', key='join')]
+            [sg.Text('Usuário:', size=(7, 0)), sg.Input(size=(15, 0), key='-usr-')],
+            [sg.Text('Senha:', size=(7, 0)), sg.Input(size=(15, 0), key='-pwd-', password_char='*')],
+            [sg.Button('Fazer Login', key='login'), sg.Button('Cadastrar-se', key='register')]
         ]
-        self.window = Gui.Window('Login', layout=self.layout)
-        self.sql = SqlEmu()
+        # Create a window
+        self.window = sg.Window('Login', layout=self.layout)
+        self.sql = SqlSim()
 
-    def init(self):
+    def main(self):
             try:
                 while True:
                     button, values = self.window.Read()
-                    if button == Gui.WIN_CLOSED:
+                    if button == sg.WIN_CLOSED:
                         break
-                    user = values['user']
-                    password = values['password']
+                    user = values['-usr-']
+                    password = values['-pwd-']
+                    # If user click on the Login button
                     if button == 'login':
-                        pass
-                    elif button == 'join':
-                        self.sql.add_data(user=user, password=password)
+                        self.login(user, password)
+                    # Iff user click on the Register button
+                    elif button == 'register':
+                        self.register(user, password)
             finally:
-                self.sql.database_update()
+                # Save changes in database
+                self.sql.database_save()
+
+    def login(self, user, password):
+        # Check if user exist
+        search = self.sql.check_data(user, password)
+        # If return 0 the user exists but the password does'n match
+        if search == 0:
+            print('Incorrect password!')
+        # If return 1 the user is not registered
+        elif search == 1:
+            print('User not found!')
+        # Return the user ID if the user and the password matches in the database
+        else:
+            # You can use the user ID to open a PERSONAL window for this user
+            # Change to window.hide() if you want to open another window after the authentification
+            self.window.close()
+
+    # Register a new user
+    def register(self, user, password):
+        # Check if the user already in use, if return 1, the user is not in use
+        if self.sql.check_data(user, password) == 1:
+            self.sql.add_data(user, password)
+            print('User registered')
+        # If return 0 or an user ID, the user is already in use
+        else:
+            print('User already in use!')
 
 
-window = Login()
-window.init()
+window = Auth()
+window.main()
