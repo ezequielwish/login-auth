@@ -35,16 +35,17 @@ class Auth:
     def login(self, user, password):
         # Check if user exist
         search = self.sql.check_data(user, password)
-        # If return 0 the user exists but the password does'n match
+        # If return 0 the user exists but the password doesn't match
         if search == 0:
-            print('Incorrect password!')
+            sg.popup('Senha incorreta!')
         # If return 1 the user is not registered
         elif search == 1:
-            print('User not found!')
+            sg.popup('Usuário inexistente!')
         # Return the user ID if the user and the password matches in the database
         else:
             # You can use the user ID to open a PERSONAL window for this user
             # Change to window.hide() if you want to open another window after the authentification
+            sg.popup(f'Sucesso!\nID do usuário: {search}')
             self.window.close()
 
     # Register a new user
