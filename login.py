@@ -1,3 +1,5 @@
+from msilib.schema import TextStyle
+from types import FrameType
 from database import SqlSim
 import PySimpleGUI as sg
 
@@ -5,16 +7,20 @@ import PySimpleGUI as sg
 class Auth:
     def __init__(self):
         # Window Layout
+        sg.theme('Material1')
         self.layout = [
-            [sg.Text('Usuário:', size=(7, 0)), sg.Input(size=(15, 0), key='-usr-')],
-            [sg.Text('Senha:', size=(7, 0)), sg.Input(size=(15, 0), key='-pwd-', password_char='*')],
-            [sg.Button('Fazer Login', key='login'), sg.Button('Cadastrar-se', key='register')]
+            [sg.Frame(title='Insira seus dados', title_location=sg.TITLE_LOCATION_TOP , 
+            layout=[
+                [sg.Text('Usuário:', size=(7, 0)), sg.Input(size=(15, 0), key='-usr-')], 
+                [sg.Text('Senha:', size=(7, 0)), sg.Input(size=(15, 0), key='-pwd-', password_char='*')]
+            ])],
+            [sg.Button('Fazer login', key='login', bind_return_key=True), sg.Button('Cadastrar-se', key='register')]
         ]
         # Create a window
         self.window = sg.Window('Login', layout=self.layout)
         self.sql = SqlSim()
 
-    def main(self):
+    def run(self):
             try:
                 while True:
                     button, values = self.window.Read()
@@ -25,7 +31,7 @@ class Auth:
                     # If user click on the Login button
                     if button == 'login':
                         self.login(user, password)
-                    # Iff user click on the Register button
+                    # If user click on the Register button
                     elif button == 'register':
                         self.register(user, password)
             finally:
@@ -43,9 +49,9 @@ class Auth:
             sg.popup('Usuário inexistente!')
         # Return the user ID if the user and the password matches in the database
         else:
+            sg.popup(f'Sucesso!\nID do usuário: {search}')
             # You can use the user ID to open a PERSONAL window for this user
             # Change to window.hide() if you want to open another window after the authentification
-            sg.popup(f'Sucesso!\nID do usuário: {search}')
             self.window.close()
 
     # Register a new user
@@ -59,5 +65,5 @@ class Auth:
             print('User already in use!')
 
 
-window = Auth()
-window.main()
+login_window = Auth()
+login_window.run()
